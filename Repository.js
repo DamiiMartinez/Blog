@@ -5,21 +5,21 @@ const databaseName = process.env.DB_NAME;
 const username = process.env.DB_USER;
 const password = process.env.DB_PASSWORD;
 const host = process.env.DB_HOST;
-const port = process.env.DB_PORT;  // Si Render te proporciona un puerto
+const port = process.env.DB_PORT || 5432;  // Si Render te proporciona un puerto
 
-// Configuración de Sequelize para PostgreSQL
 const sequelize = new Sequelize(databaseName, username, password, {
   host: host,
   port: port,
-  dialect: 'postgres',  // Cambiar a 'postgres' para PostgreSQL
+  dialect: 'postgres',
   protocol: 'postgres',
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false,  // Mantener esto para las conexiones seguras en Render
-    },
-  },
+      rejectUnauthorized: false // Permite conexiones seguras a bases de datos externas
+    }
+  }
 });
+
 
 // Definición del modelo de ejemplo: Envia los datos del certificado a una tabla MySQL
 const Persona = sequelize.define('Persona', {
@@ -155,15 +155,11 @@ Comentario.belongsTo(Blog, {
 const connectAndSync = async () => {
   try {
     await sequelize.authenticate();
-    console.log('Connection to PostgreSQL has been established successfully.');
-
-    // Sincronizar modelos
-    await sequelize.sync();
-    console.log('Models synchronized successfully.');
+    console.log('Connection has been established successfully.');
   } catch (error) {
-    console.error('Unable to connect to the database:', error);
-    process.exit(1); // Salir si ocurre otro error
-  }
+    console.error('Unable to connect to the database:', error.message);
+    console.error('Stack trace:', error.stack);
+  }  
 };
 
 connectAndSync();

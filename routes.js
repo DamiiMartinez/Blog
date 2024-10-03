@@ -117,19 +117,24 @@ app.post('/sesion_cuenta', async (req, res) => {
 app.post('/crear_post', async (req, res) => {
   const { texto } = req.body;
 
+  if (!texto) {
+    return res.status(400).json({ error: 'El campo texto es obligatorio' });
+  }
+
   try {
     const Post1 = await Blog.create({
       nombre: req.session.nombre,
       texto: texto,
       createdAt: new Date(),
       updatedAt: new Date(),
-    });      
+    });
     res.sendFile(path.join(dirname, './' ,'public' ,'index.html'));
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
   }
 });
+
 
 app.get('/sesion', async (req, res) => {
   let isAdmin;
