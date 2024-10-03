@@ -164,5 +164,10 @@ const connectAndSync = async () => {
 
 connectAndSync();
 
+console.log('DB_HOST:', process.env.DB_HOST);
+console.log('DB_PORT:', process.env.DB_PORT);
+console.log('DB_NAME:', process.env.DB_NAME);
+console.log('DB_USER:', process.env.DB_USER);
+
 //Exporta el Certificado hacia app.js como 'Certificate's
 module.exports = { sequelize, Persona, Usuario, Administrador, Blog, Comentario };
