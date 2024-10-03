@@ -8,9 +8,27 @@ const {url, fileURLToPath} = require('url');
 const path = require('path');
 
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis').default; // Asegúrate de usar .default
 const redis = require('redis');
 
+// Crea un cliente de Redis
+const redisClient = redis.createClient({
+  url: process.env.REDIS_URL // Asegúrate de tener configurada la URL de Redis
+});
+
+redisClient.on('error', (err) => console.error('Redis Client Error', err));
+
+(async () => {
+  await redisClient.connect();
+})();
+
+// Configura express-session para usar Redis
+app.use(session({
+  store: new RedisStore({ client: redisClient }),
+  secret: 'tu_secreto_aqui',
+  resave: false,
+  saveUninitialized: false
+}));
 
 const dirname = __dirname;
 
@@ -18,16 +36,6 @@ const dirname = __dirname;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const redisClient = redis.createClient({
-  url: process.env.REDIS_URL // Asegúrate de tener configurada la URL de Redis
-});
-
-app.use(session({
-  store: new RedisStore({ client: redisClient }),
-  secret: 'tu_secreto_aqui',
-  resave: false,
-  saveUninitialized: false
-}));
 
 // Servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
