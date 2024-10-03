@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Crear Cuenta</title>
+    <link rel="stylesheet" href="login_crear.css">
     <style>
         body {
     background: #76b852; /* fallback for old browsers */
@@ -12,13 +13,6 @@
     font-family: "Roboto", sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;      
-}
-
-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Ajusta según sea necesario */
 }
 
 .login-page {
@@ -87,25 +81,33 @@ main {
     </style>
 </head>
 <body>
-    <main class="login-page">
-        <section class="form">
-            <h3>Crear cuenta</h3>
+    <main>
+        <br id="acceso">
+        <h1>Crear Acceso</h1>
+        <section>
             <form action="/crear_cuenta" method="post">
                 <br>
                 <label for="nombre">Nombre de Usuario: </label>
-                <input type="text" name="nombre" id="nombre">
+                <input type="text" name="nombre" id="nombre" required>
                 <br>
                 <br>
                 <label for="Id">Correo: </label>
-                <input type="text" name="Id" id="Id">
+                <input type="text" name="Id" id="Id" required>
                 <br>
                 <br>
                 <label for="contraseña">Contraseña: </label>
-                <input type="password" name="contraseña" id="contraseña">
+                <input type="text" name="contraseña" id="contraseña" required>
+                <br>
+                <br>
+                <label for="permiso">Permisos de Administrador: </label>
+                <input type="checkbox" name="permiso" id="permiso">
+                <br>
+                <br>
+                <label for="administrador">Contraseña del Administrador: </label>
+                <input type="text" name="administrador" id="administrador">
                 <br>
                 <br>
                 <button type="submit">Enviar</button>
-                <p class="message">¿Estas registrado? <a href="/login">Inicia sesion aca</a></p>
             </form>
         </section>
     </main>

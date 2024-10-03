@@ -61,7 +61,7 @@
 
         #login a {
             text-decoration: none;
-            color: #4CAF50;
+            color: white;
             font-size: 18px;
         }
 
@@ -100,6 +100,7 @@
             cursor: pointer;
             font-size: 16px;
             transition: background 0.3s ease;
+            display: none;
         }
 
         #logout-button:hover {
@@ -109,7 +110,8 @@
 </head>
 <body>
     <header>
-        <button id="logout-button" onclick="window.location.href='/login'">Cerrar Sesión</button>
+        <button id="logout-button" onclick="window.location.href='/cerrar'">Cerrar Sesión</button>
+
         <div id="admin-section">
             <h1>Crear nuevo post</h1>
             <br>
@@ -125,23 +127,6 @@
             <br>
             <a href="/crear">Crear Cuenta</a>
         </div>
-
-        <script>
-            // Verificar si el usuario es administrador
-            fetch('/sesion')
-              .then(response => response.json())
-              .then(data => {
-                if (data.isAdmin) {
-                  document.getElementById('admin-section').style.display = 'block';
-                  document.getElementById('login').style.display = 'none';
-                }
-
-                if (data.isUser) {
-                  document.getElementById('login').style.display = 'none';
-                  document.getElementById('admin-section').style.display = 'block'; // Muestra el área de creación para usuarios
-                }
-            });
-        </script>
     </header>
     <br>
 
@@ -163,7 +148,6 @@
                             <p>Creado en: ${post.createdAt}</p>
                             <p>Actualizado en: ${post.updatedAt}</p>
                             <p>${post.texto}</p>
-                            <button onclick="eliminarPost(${post.Nro})">Eliminar</button>
                         `;
                         postsContainer.appendChild(section);
                     });
@@ -194,6 +178,30 @@
 
             window.onload = fetchPosts;
         </script>
+
+<script>
+                    // Verificar si el usuario es administrador
+                    fetch('/sesion')
+                      .then(response => response.json())
+                      .then(data => {
+                        if (data === "administrador") {
+                          document.getElementById('admin-section').style.display = 'block';
+                          document.getElementById('logout-button').style.display = 'block';
+                          document.getElementById('login').style.display = 'none';
+        
+                            const response = fetch('/posts');
+                            const posts = response.json();
+                            posts.forEach(post => {
+                                const secciones = document.querySelectorAll("section");
+                                secciones.innerHTML = `<button onclick="eliminarPost(${post.Nro})">Eliminar</button>`;
+                            });
+                        }
+                        if (data === "usuario") {
+                            document.getElementById('logout-button').style.display = 'block';
+                          document.getElementById('login').style.display = 'none';
+                        }
+                    });
+                </script>
     </main>
 </body>
 </html>
