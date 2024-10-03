@@ -4,18 +4,17 @@ const { Sequelize, DataTypes } = require('sequelize');
 const databaseName = process.env.DB_NAME || 'blog_xfv4';
 const username = process.env.DB_USER || 'blog_xfv4_user';
 const password = process.env.DB_PASSWORD || '5BfKIeScc0OxCEjmqPld3O7hp3sELRiH';
-const host = process.env.DB_HOST;
+const host = process.env.DB_HOST || 'dpg-crveavbv2p9s73ehk4ig-a';
 const port = process.env.DB_PORT || 5432;  // Si Render te proporciona un puerto
 
 const sequelize = new Sequelize(databaseName, username, password, {
   host: host,
   port: port,
   dialect: 'postgres',
-  logging: console.log, // Esto habilitará el registro de las consultas SQL
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false
+      rejectUnauthorized: false // Cambia esto a true en producción
     }
   }
 });
