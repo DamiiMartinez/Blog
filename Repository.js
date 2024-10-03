@@ -27,10 +27,14 @@ createDatabaseIfNotExists(databaseName);
 
 // Configuración de Sequelize
 const sequelize = new Sequelize(databaseName, username, password, {
-//Servidor: Localhost
-  host: host,
-//Dialecto en MySQL
-  dialect: 'mysql',
+  dialect: 'postgres',
+  protocol: 'postgres',
+  dialectOptions: {
+    ssl: {
+      require: true,
+      rejectUnauthorized: false
+    }
+  }
 });
 
 // Definición del modelo de ejemplo: Envia los datos del certificado a una tabla MySQL
