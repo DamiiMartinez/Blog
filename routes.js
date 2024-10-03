@@ -1,34 +1,38 @@
+const { sequelize, Persona, Usuario, Administrador, Blog, Comentario } = require('./Repository'); 
+
 const express = require('express');
 const app = express.Router(); 
 
-const { sequelize, Persona, Usuario, Administrador, Blog, Comentario } = require('./Repository'); 
-
 const bodyParser = require('body-parser');
 const path = require('path');
+
+const express = require('express');
 const session = require('express-session');
-const RedisStore = require('connect-redis').default; // Asegúrate de usar .default
+const RedisStore = require('connect-redis')(session);
 const redis = require('redis');
 
+// Crear un cliente de Redis
 const redisClient = redis.createClient({
-  url: process.env.REDIS_URL, 
-  socket: {
-    host: '127.0.0.1', // Usa IPv4
-    port: 6379
-  }
+  url: process.env.REDIS_URL // Asegúrate de tener configurada la URL de Redis en las variables de entorno
 });
 
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
 
+// Conectar al cliente Redis
 (async () => {
   await redisClient.connect();
 })();
 
-// Configura express-session para usar Redis
+// Configurar express-session para usar Redis
 app.use(session({
   store: new RedisStore({ client: redisClient }),
-  secret: process.env.SESSION_SECRET || 'tu_secreto_aqui', // Usa una variable de entorno para el secreto
+  secret: 'tu_secreto_aqui', // Cambia esto a un valor seguro
   resave: false,
-  saveUninitialized: false
+  saveUninitialized: false,
+  cookie: {
+    secure: false, // Cambia a true si usas HTTPS en producción
+    maxAge: 1000 * 60 * 60 // 1 hora (puedes ajustar esto)
+  }
 }));
 
 const dirname = __dirname;
