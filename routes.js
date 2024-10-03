@@ -16,14 +16,15 @@ app.use(bodyParser.json());
 
 // Configuración de sesiones
 app.use(session({
-    secret: 'mi-secreto', // Cambia esto por un valor más seguro
-    resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false } // Cambia a true si usas HTTPS
+  secret: process.env.SESSION_SECRET || 'mi-secreto',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 
+
 // Servir archivos estáticos desde la carpeta 'public'
-app.use(express.static(path.join(dirname, '..')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Página de inicio con opciones para registrarse o iniciar sesión
 app.get('/', (req, res) => {
