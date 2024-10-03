@@ -20,7 +20,7 @@ const sequelize = new Sequelize(databaseName, username, password, {
 });
 
 
-// Definición del modelo de ejemplo: Envia los datos del certificado a una tabla MySQL
+// Definición del modelo de ejemplo
 const Persona = sequelize.define('Persona', {
   userId: {
     type: DataTypes.CHAR,

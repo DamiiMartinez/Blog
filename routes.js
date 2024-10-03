@@ -12,7 +12,7 @@ const redis = require('redis');
 
 // Crear un cliente de Redis
 const redisClient = redis.createClient({
-  url: process.env.REDIS_URL // Asegúrate de tener configurada la URL de Redis en las variables de entorno
+  url: process.env.REDIS_URL || 'postgresql://blog_xfv4_user:5BfKIeScc0OxCEjmqPld3O7hp3sELRiH@dpg-crveavbv2p9s73ehk4ig-a/blog_xfv4' // Asegúrate de tener configurada la URL de Redis en las variables de entorno
 });
 
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
