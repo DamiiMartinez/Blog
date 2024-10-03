@@ -11,11 +11,11 @@ const sequelize = new Sequelize(databaseName, username, password, {
   host: host,
   port: port,
   dialect: 'postgres',
-  protocol: 'postgres',
+  logging: console.log, // Esto habilitará el registro de las consultas SQL
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false // Permite conexiones seguras a bases de datos externas
+      rejectUnauthorized: false
     }
   }
 });

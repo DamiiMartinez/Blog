@@ -6,7 +6,11 @@ const {  sequelize, Persona, Usuario, Administrador, Blog, Comentario  } = requi
 const bodyParser = require('body-parser');
 const {url, fileURLToPath} = require('url');
 const path = require('path');
+
 const session = require('express-session');
+const RedisStore = require('connect-redis')(session);
+const redis = require('redis');
+
 
 const dirname = __dirname;
 
@@ -14,14 +18,16 @@ const dirname = __dirname;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-// Configuración de sesiones
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'mi-secreto',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: process.env.NODE_ENV === 'production' }
-}));
+const redisClient = redis.createClient({
+  url: process.env.REDIS_URL // Asegúrate de tener configurada la URL de Redis
+});
 
+app.use(session({
+  store: new RedisStore({ client: redisClient }),
+  secret: 'tu_secreto_aqui',
+  resave: false,
+  saveUninitialized: false
+}));
 
 // Servir archivos estáticos desde la carpeta 'public'
 app.use(express.static(path.join(__dirname, 'public')));
