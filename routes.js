@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 
 const session = require('express-session');
-const RedisStore = require('connect-redis')(session);
+const RedisStore = require('connect-redis').default; // Asegúrate de usar .default si estás usando ES Modules
 const redis = require('redis');
 
 // Crear un cliente de Redis
