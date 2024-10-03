@@ -21,9 +21,6 @@ const sequelize = new Sequelize(databaseName, username, password, {
   },
 });
 
-// Crear la base de datos antes de inicializar Sequelize
-createDatabaseIfNotExists(databaseName);
-
 // Definición del modelo de ejemplo: Envia los datos del certificado a una tabla MySQL
 const Persona = sequelize.define('Persona', {
   userId: {
