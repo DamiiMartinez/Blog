@@ -39,6 +39,10 @@ app.get('/crear', (req, res) => {
   res.sendFile(path.join(dirname, './' ,'public' ,'crear.html'));
 });
 
+app.get('/administrador', (req, res) => {
+  res.sendFile(path.join(dirname, './' ,'public' ,'administrador.html'));
+});
+
 app.get('/posts', async (req, res) => {
   try {
       // Obtener todos los posts desde la tabla Blog
@@ -60,24 +64,36 @@ app.post('/crear_cuenta', async (req, res) => {
       contraseña: contraseña,
     });
 
-    if(permiso == 0 && Administrador.findOne({where: {contraseña: administrador,}}) ){
-      const administrador1 = await Administrador.create({
-        userId: Persona1.userId,
-        nombre: nombre,
-        contraseña: contraseña,
-        permiso: permiso,
-      });
-    }
+    const Usuario1 = await Usuario.create({
+      userId: Persona1.userId,
+      nombre: nombre,
+      contraseña: contraseña,
+    });
 
-    else{
-      const Usuario1 = await Usuario.create({
-        userId: Persona1.userId,
-        nombre: nombre,
-        contraseña: contraseña,
-      });
-    }
+    res.redirect('/login');
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
-    res.sendFile(path.join(dirname, './' ,'public' ,'login.html'));
+app.post('/crear_administrador', async (req, res) => {
+  const { nombre, Id, contraseña} = req.body;
+
+  try {
+    const Persona1 = await Persona.create({
+      userId: Id,
+      contraseña: contraseña,
+    });
+
+    const administrador1 = await Administrador.create({
+      userId: Persona1.userId,
+      nombre: nombre,
+      contraseña: contraseña,
+      permiso: '1',
+    });
+
+    res.redirect('/login');
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
@@ -128,7 +144,7 @@ app.post('/crear_post', async (req, res) => {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    res.sendFile(path.join(dirname, './' ,'public' ,'index.html'));
+    res.redirect('/');
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: error.message });
