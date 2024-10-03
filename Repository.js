@@ -1,9 +1,9 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Credenciales de la base de datos desde las variables de entorno
-const databaseName = process.env.DB_NAME;
-const username = process.env.DB_USER;
-const password = process.env.DB_PASSWORD;
+const databaseName = process.env.DB_NAME || 'blog_xfv4';
+const username = process.env.DB_USER || 'blog_xfv4_user';
+const password = process.env.DB_PASSWORD || '5BfKIeScc0OxCEjmqPld3O7hp3sELRiH';
 const host = process.env.DB_HOST;
 const port = process.env.DB_PORT || 5432;  // Si Render te proporciona un puerto
 
