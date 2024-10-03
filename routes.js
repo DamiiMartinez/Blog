@@ -9,9 +9,12 @@ const session = require('express-session');
 const RedisStore = require('connect-redis').default; // Asegúrate de usar .default
 const redis = require('redis');
 
-// Crea un cliente de Redis
 const redisClient = redis.createClient({
-  url: process.env.REDIS_URL // URL de Redis desde las variables de entorno
+  url: process.env.REDIS_URL, 
+  socket: {
+    host: '127.0.0.1', // Usa IPv4
+    port: 6379
+  }
 });
 
 redisClient.on('error', (err) => console.error('Redis Client Error', err));
