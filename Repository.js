@@ -12,14 +12,7 @@ const port = process.env.DB_PORT; // Asegúrate de que esto esté definido
 const sequelize = new Sequelize(databaseName, username, password, {
     host: host,
     port: port,
-
     dialect: 'postgres',
-    dialectOptions: {
-        ssl: {
-            require: true,
-            rejectUnauthorized: false // Cambia esto a true en producción
-        }
-    }
 });
 
 // Definición del modelo de ejemplo
