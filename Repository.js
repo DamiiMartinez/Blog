@@ -1,12 +1,14 @@
+const { name } = require('body-parser');
+const { user } = require('pg/lib/defaults');
 const { Sequelize, DataTypes } = require('sequelize');
 
 // Credenciales de la base de datos desde las variables de entorno
 const databaseName = "blog_xfv4";
 const username = "blog_xfv4_user";
 const password = "5BfKIeScc0OxCEjmqPld3O7hp3sELRiH";
-const host = "dpg-crveavbv2p9s73ehk4ig-a";
 
-const port = process.env.DB_PORT = 5432;  // Si Render te proporciona un puerto
+const host = "dpg-crveavbv2p9s73ehk4ig-a";
+const port = 5432;  // Si Render te proporciona un puerto
 
 const sequelize = new Sequelize(databaseName, username, password, {
   host: host,
@@ -164,10 +166,10 @@ const connectAndSync = async () => {
 
 connectAndSync();
 
-console.log('DB_HOST:', process.env.DB_HOST);
-console.log('DB_PORT:', process.env.DB_PORT);
-console.log('DB_NAME:', process.env.DB_NAME);
-console.log('DB_USER:', process.env.DB_USER);
+console.log('DB_HOST:', host);
+console.log('DB_PORT:', port);
+console.log('DB_NAME:', databaseName);
+console.log('DB_USER:', username);
 
 //Exporta el Certificado hacia app.js como 'Certificate's
 module.exports = { sequelize, Persona, Usuario, Administrador, Blog, Comentario };
