@@ -1,16 +1,18 @@
 const { Sequelize, DataTypes } = require('sequelize');
+require('dotenv').config();
 
 // Credenciales de la base de datos desde las variables de entorno
-const databaseName = process.env.DB_NAME || "blog_xfv4"; // Asegúrate de que DB_NAME esté definida
-const username = process.env.DB_USER || "blog_xfv4_user"; // Asegúrate de que DB_USER esté definida
-const password = process.env.DB_PASS || "5BfKIeScc0OxCEjmqPld3O7hp3sELRiH"; // Asegúrate de que DB_PASS esté definida
+const databaseName = process.env.DB_NAME; // Asegúrate de que DB_NAME esté definida
+const username = process.env.DB_USER; // Asegúrate de que DB_USER esté definida
+const password = process.env.DB_PASS; // Asegúrate de que DB_PASS esté definida
 
-const host = process.env.DB_HOST || "dpg-crveavbv2p9s73ehk4ig-a"; // Solo el nombre del host
-const port = process.env.DB_PORT || 5432; // Asegúrate de que esto esté definido
+const host = process.env.DB_HOST; // Solo el nombre del host
+const port = process.env.DB_PORT; // Asegúrate de que esto esté definido
 
 const sequelize = new Sequelize(databaseName, username, password, {
     host: host,
     port: port,
+
     dialect: 'postgres',
     dialectOptions: {
         ssl: {
