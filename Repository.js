@@ -1,9 +1,7 @@
-const { name } = require('body-parser');
-const { user } = require('pg/lib/defaults');
 const { Sequelize, DataTypes } = require('sequelize');
 
 const sequelize = new Sequelize('blog_xfv4', 'blog_xfv4_user', '5BfKIeScc0OxCEjmqPld3O7hp3sELRiH', {
-  host: 'dpg-crveavbv2p9s73ehk4ig-a',
+  host: 'postgresql://blog_xfv4_user:5BfKIeScc0OxCEjmqPld3O7hp3sELRiH@dpg-crveavbv2p9s73ehk4ig-a/blog_xfv4',
   port: 5432,
   dialect: 'postgres',
   dialectOptions: {
