@@ -1,15 +1,23 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('blog_xfv4', 'blog_xfv4_user', '5BfKIeScc0OxCEjmqPld3O7hp3sELRiH', {
-  host: 'postgresql://blog_xfv4_user:5BfKIeScc0OxCEjmqPld3O7hp3sELRiH@dpg-crveavbv2p9s73ehk4ig-a/blog_xfv4',
-  port: 5432,
-  dialect: 'postgres',
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false // Cambiar a true en producción
+// Credenciales de la base de datos desde las variables de entorno
+const databaseName = process.env.DB_NAME || "blog_xfv4"; // Asegúrate de que DB_NAME esté definida
+const username = process.env.DB_USER || "blog_xfv4_user"; // Asegúrate de que DB_USER esté definida
+const password = process.env.DB_PASS || "5BfKIeScc0OxCEjmqPld3O7hp3sELRiH"; // Asegúrate de que DB_PASS esté definida
+
+const host = process.env.DB_HOST || "dpg-crveavbv2p9s73ehk4ig-a"; // Solo el nombre del host
+const port = process.env.DB_PORT || 5432; // Asegúrate de que esto esté definido
+
+const sequelize = new Sequelize(databaseName, username, password, {
+    host: host,
+    port: port,
+    dialect: 'postgres',
+    dialectOptions: {
+        ssl: {
+            require: true,
+            rejectUnauthorized: false // Cambia esto a true en producción
+        }
     }
-  }
 });
 
 // Definición del modelo de ejemplo
@@ -154,6 +162,13 @@ const connectAndSync = async () => {
 };
 
 connectAndSync();
+
+// Log para verificar la configuración
+console.log('DB_HOST:', host);
+console.log('DB_PORT:', port);
+console.log('DB_NAME:', databaseName);
+console.log('DB_USER:', username);
+
 
 //Exporta el Certificado hacia app.js como 'Certificate's
 module.exports = { sequelize, Persona, Usuario, Administrador, Blog, Comentario };
