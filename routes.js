@@ -5,34 +5,16 @@ const app = express.Router();
 
 const bodyParser = require('body-parser');
 const path = require('path');
-
 const session = require('express-session');
-const RedisStore = require('connect-redis').default; // Asegúrate de usar .default si estás usando ES Modules
-const redis = require('redis');
-
-const connectionString = 'postgresql://blog_xfv4_user:5BfKIeScc0OxCEjmqPld3O7hp3sELRiH@dpg-crveavbv2p9s73ehk4ig-a/blog_xfv4';
-
-// Crear un cliente de Redis
-const redisClient = redis.createClient({
-  url: connectionString  // Asegúrate de tener configurada la URL de Redis en las variables de entorno
-});
-
-redisClient.on('error', (err) => console.error('Redis Client Error', err));
-
-// Conectar al cliente Redis
-(async () => {
-  await redisClient.connect();
-})();
 
 // Configurar express-session para usar Redis
 app.use(session({
-  store: new RedisStore({ client: redisClient }),
   secret: 'tu_secreto_aqui', // Cambia esto a un valor seguro
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: false, // Cambia a true si usas HTTPS en producción
-    maxAge: 1000 * 60 * 60 // 1 hora (puedes ajustar esto)
+    maxAge: 1000 * 60 * 60 // 1 hora (ajusta según sea necesario)
   }
 }));
 
