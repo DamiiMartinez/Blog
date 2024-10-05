@@ -2,26 +2,17 @@ const { name } = require('body-parser');
 const { user } = require('pg/lib/defaults');
 const { Sequelize, DataTypes } = require('sequelize');
 
-// Credenciales de la base de datos desde las variables de entorno
-const databaseName = "blog_xfv4";
-const username = "blog_xfv4_user";
-const password = "5BfKIeScc0OxCEjmqPld3O7hp3sELRiH";
-
-const host = "dpg-crveavbv2p9s73ehk4ig-a";
-const port = 5432;  // Si Render te proporciona un puerto
-
-const sequelize = new Sequelize(databaseName, username, password, {
-  host: host,
-  port: port,
+const sequelize = new Sequelize('blog_xfv4', 'blog_xfv4_user', '5BfKIeScc0OxCEjmqPld3O7hp3sELRiH', {
+  host: 'dpg-crveavbv2p9s73ehk4ig-a',
+  port: 5432,
   dialect: 'postgres',
   dialectOptions: {
     ssl: {
       require: true,
-      rejectUnauthorized: false // Cambia esto a true en producción
+      rejectUnauthorized: false // Cambiar a true en producción
     }
   }
 });
-
 
 // Definición del modelo de ejemplo
 const Persona = sequelize.define('Persona', {
