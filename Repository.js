@@ -154,6 +154,10 @@ const connectAndSync = async () => {
   try {
     await sequelize.authenticate();
     console.log('Connection has been established successfully.');
+
+    // Sincroniza los modelos con la base de datos
+    await sequelize.sync({ force: false }); // Cambia a true si deseas borrar las tablas existentes
+    console.log('All models were synchronized successfully.');
   } catch (error) {
     console.error('Unable to connect to the database:', error.message);
     console.error('Stack trace:', error.stack);
