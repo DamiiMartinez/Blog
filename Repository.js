@@ -9,10 +9,14 @@ const password = process.env.DB_PASS; // Asegúrate de que DB_PASS esté definid
 const host = process.env.DB_HOST; // Solo el nombre del host
 const port = process.env.DB_PORT; // Asegúrate de que esto esté definido
 
-const sequelize = new Sequelize(databaseName, username, password, {
-    host: host,
-    port: port,
-    dialect: 'postgres',
+const sequelize = new Sequelize(process.env.DB_URL, {
+  dialect: 'postgres',
+  dialectOptions: {
+      ssl: {
+          require: true,
+          rejectUnauthorized: false // Cambia esto a true en producción
+      }
+  }
 });
 
 // Definición del modelo de ejemplo
