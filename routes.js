@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
     const blogs = await Blog.findAll({
       order: [['Nro', 'DESC']] // Ordenar por ID de blog en orden descendente
     });
-    res.sendFile(path.join(__dirname, '../public/html/index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'html', 'index.html'));
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al cargar los blogs');
@@ -49,7 +49,7 @@ router.get('/', async (req, res) => {
 
 // Ruta para mostrar el formulario de registro
 router.get('/register', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/html/register.html'));
+  res.sendFile(path.join(__dirname, 'public', 'html', 'register.html'));
 });
 
 // Ruta para procesar el registro
@@ -73,7 +73,7 @@ router.post('/register', async (req, res) => {
           esAdmin: esAdmin === 'on', // Checkbox marcado será 'on', si no está marcado será undefined
       });
 
-      res.sendFile(path.join(__dirname, '../public/html/login.html'));
+      res.sendFile(path.join(__dirname, 'public', 'html', 'login.html'));
   } catch (error) {
       console.error(error);
       res.status(500).json({ error: error.message });
@@ -83,7 +83,7 @@ router.post('/register', async (req, res) => {
 
 // Ruta para mostrar el formulario de login
 router.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/html/login.html'));
+  res.sendFile(path.join(__dirname, 'public', 'html', 'login.html'));
 });
 
 // Ruta para procesar el login
@@ -109,9 +109,9 @@ router.get('/dashboard', isAuthenticated, async (req, res) => {
   try {
       const usuario = await Usuario.findOne({ where: { userId: req.session.userId } });
       if (usuario.esAdmin) {
-          res.sendFile(path.join(__dirname, '../public/html/admin-dashboard.html'));
+          res.sendFile(path.join(__dirname, 'public', 'html', 'admin-dashboard.html'));
       } else {
-          res.sendFile(path.join(__dirname, '../public/html/user-dashboard.html'));
+          res.sendFile(path.join(__dirname, 'public', 'html', 'user-dashboard.html'));
       }
   } catch (err) {
       console.error(err);
