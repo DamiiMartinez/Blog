@@ -19,7 +19,7 @@ const sequelize = new Sequelize(process.env.DB_URL, {
   }
 });
 
-// Definición del modelo de ejemplo
+// Definición del modelo Persona
 const Persona = sequelize.define('Persona', {
   userId: {
     type: DataTypes.CHAR,
@@ -30,10 +30,11 @@ const Persona = sequelize.define('Persona', {
     type: DataTypes.CHAR,
     allowNull: false,
   },
-},{
+}, {
   timestamps: false,
 });
 
+// Modificación del modelo Usuario
 const Usuario = sequelize.define('Usuario', {
   userId: {
     type: DataTypes.CHAR,
@@ -48,10 +49,15 @@ const Usuario = sequelize.define('Usuario', {
     type: DataTypes.CHAR,
     allowNull: false,
   },
-},{
+  esAdmin: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false,
+  }
+}, {
   timestamps: false,
 });
 
+// Definición del modelo Administrador
 const Administrador = sequelize.define('Administrador', {
   userId: {
     type: DataTypes.CHAR,
@@ -70,26 +76,28 @@ const Administrador = sequelize.define('Administrador', {
     type: DataTypes.BOOLEAN,
     defaultValue: false,
   },
-},{
+}, {
   timestamps: false,
 });
 
-Usuario.belongsTo(Persona,{
+// Relaciones
+Usuario.belongsTo(Persona, {
   foreignKey: 'userId',
   targetKey: 'userId',
 });
 
-Administrador.belongsTo(Persona,{
+Administrador.belongsTo(Persona, {
   foreignKey: 'userId',
   targetKey: 'userId',
 });
 
+// Definición del modelo Blog
 const Blog = sequelize.define('Blog', {
   Nro: {
     type: DataTypes.INTEGER,
     allowNull: false,
     primaryKey: true,
-    autoIncrement: true,  // Esto funciona en PostgreSQL como SERIAL
+    autoIncrement: true,
   },
   nombre: {
     type: DataTypes.TEXT,
@@ -97,6 +105,10 @@ const Blog = sequelize.define('Blog', {
   },
   texto: {
     type: DataTypes.TEXT,
+    allowNull: false,
+  },
+  autorId: {
+    type: Sequelize.CHAR, 
     allowNull: false,
   },
   createdAt: {
@@ -111,42 +123,38 @@ const Blog = sequelize.define('Blog', {
   timestamps: false,
 });
 
-
+// Definición del modelo Comentario
 const Comentario = sequelize.define('Comentario', {
   Nro: {
     type: DataTypes.INTEGER,
     allowNull: false,
-
     primaryKey: true,
-    autoIncrement: true, // No es necesario el primaryKey aquí si Id ya es la clave primaria
-  },
-  Id: {
-    type: DataTypes.CHAR,
-    allowNull: false,
+    autoIncrement: true,
   },
   texto: {
     type: DataTypes.TEXT,
     allowNull: false,
   },
-  nombre: {
-    type: DataTypes.TEXT,
+  blogId: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
   },
-},{
+}, {
   timestamps: false,
 });
 
-Blog.belongsTo(Administrador, {
-  foreignKey: 'Id',
-  targetKey: 'userId',
+// Relaciones
+Blog.hasMany(Comentario, {
+  foreignKey: 'blogId',
+  sourceKey: 'Nro',
 });
 
 Comentario.belongsTo(Blog, {
-  foreignKey: 'Nro',
+  foreignKey: 'blogId',
   targetKey: 'Nro',
 });
 
