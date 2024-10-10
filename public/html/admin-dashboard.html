@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Dashboard de Administrador</title>
+    <style>
+        /* Estilos del dashboard de administrador */
+        .edit-form {
+            display: none;
+            margin-top: 10px;
+        }
+        .edit-form input, .edit-form textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        /* Estilos para blogs públicos */
+        #public-blogs {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .blog {
+            background-color: #e6e6e6;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .blog h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .blog p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dashboard de Administrador</h1>
+    <a href="/">Volver a la página principal</a>
+    <a href="/logout">Cerrar Sesión</a>
+
+    <h2>Crear Nuevo Blog</h2>
+    <form id="create-blog-form">
+        <input type="text" name="nombre" placeholder="Título del blog" required>
+        <textarea name="texto" placeholder="Contenido del blog" required></textarea>
+        <button type="submit">Crear Blog</button>
+    </form>
+
+    <h2>Mis Blogs</h2>
+    <div id="admin-blogs"></div>
+
+    <!-- Sección para mostrar blogs públicos -->
+
+
+    <script>
+        async function crearBlog(event) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const blogData = Object.fromEntries(formData);
+
+            try {
+                const response = await fetch('/create-blog', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(blogData)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert('Blog creado exitosamente');
+                    form.reset();
+                    cargarBlogsAdmin();
+                } else {
+                    const errorText = await response.text();
+                    throw new Error('Error al crear el blog: ' + errorText);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert(error.message);
+            }
+        }
+
+        async function cargarBlogsAdmin() {
+            try {
+                const response = await fetch('/admin-blogs');
+                if (!response.ok) {
+                    throw new Error('Error al cargar blogs');
+                }
+                const blogs = await response.json();
+                const adminBlogsDiv = document.getElementById('admin-blogs');
+                adminBlogsDiv.innerHTML = '';
+
+                blogs.forEach(blog => {
+                    const blogDiv = document.createElement('div');
+                    blogDiv.innerHTML = `
+                        <h3>${blog.nombre}</h3>
+                        <p>${blog.texto}</p>
+                        <button onclick="mostrarFormularioEdicion(${blog.Nro}, '${blog.nombre}', '${blog.texto}')">Editar</button>
+                        <button onclick="eliminarBlog(${blog.Nro})">Eliminar</button>
+                        <div id="edit-form-${blog.Nro}" class="edit-form">
+                            <input type="text" id="edit-nombre-${blog.Nro}" value="${blog.nombre}">
+                            <textarea id="edit-texto-${blog.Nro}">${blog.texto}</textarea>
+                            <button onclick="confirmarEdicion(${blog.Nro})">Confirmar Edición</button>
+                        </div>
+                    `;
+                    adminBlogsDiv.appendChild(blogDiv);
+                });
+            } catch (error) {
+                console.error('Error al cargar los blogs:', error);
+            }
+        }
+
+        function mostrarFormularioEdicion(blogId, nombre, texto) {
+            const formDiv = document.getElementById(`edit-form-${blogId}`);
+            formDiv.style.display = 'block';
+            document.getElementById(`edit-nombre-${blogId}`).value = nombre;
+            document.getElementById(`edit-texto-${blogId}`).value = texto;
+        }
+
+        async function confirmarEdicion(blogId) {
+            const nombre = document.getElementById(`edit-nombre-${blogId}`).value;
+            const texto = document.getElementById(`edit-texto-${blogId}`).value;
+            
+            if (nombre && texto) {
+                try {
+                    const response = await fetch(`/edit-blog/${blogId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ nombre, texto })
+                    });
+
+                    if (response.ok) {
+                        alert('Blog actualizado exitosamente');
+                        cargarBlogsAdmin();
+                    } else {
+                        const errorText = await response.text();
+                        throw new Error('Error al editar el blog: ' + errorText);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(error.message);
+                }
+            }
+        }
+
+        async function eliminarBlog(blogId) {
+            if (confirm("¿Está seguro de que desea eliminar este blog?")) {
+                try {
+                    const response = await fetch(`/delete-blog/${blogId}`, {
+                        method: 'POST'
+                    });
+
+                    if (response.ok) {
+                        alert('Blog eliminado exitosamente');
+                        cargarBlogsAdmin();
+                    } else {
+                        const errorText = await response.text();
+                        throw new Error('Error al eliminar el blog: ' + errorText);
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert(error.message);
+                }
+            }
+        }
+
+        document.getElementById('create-blog-form').addEventListener('submit', crearBlog);
+        window.onload = cargarBlogsAdmin;
+    </script>
+</body>
+</html>

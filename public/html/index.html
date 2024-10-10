@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Blogs Públicos</title>
+    <style>
+        #public-blogs {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        .blog {
+            background-color: #e6e6e6;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 20px;
+            width: 80%;
+            max-width: 800px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .blog h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .blog p {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .comments {
+            background-color: #f9f9f9;
+            border-top: 1px solid #ddd;
+            padding-top: 10px;
+            margin-top: 15px;
+        }
+        .comments h4 {
+            color: #444;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenido al Blog</h1>
+    <div id="user-actions">
+        <!-- Se llenará dinámicamente con JavaScript -->
+    </div>
+    <h2>Blogs Publicados</h2>
+    <div id="public-blogs">
+        <!-- Los blogs publicados se cargarán aquí -->
+    </div>
+
+    <script>
+        async function cargarBlogsPublicados() {
+            try {
+                const response = await fetch('/posts');
+                if (!response.ok) {
+                    throw new Error('Error al cargar blogs');
+                }
+                const blogs = await response.json();
+                const publicBlogsDiv = document.getElementById('public-blogs');
+                publicBlogsDiv.innerHTML = '';
+
+                for (const blog of blogs) {
+                    const blogDiv = document.createElement('div');
+                    blogDiv.className = 'blog';
+                    blogDiv.innerHTML = `
+                        <h3>${blog.nombre}</h3>
+                        <p>${blog.texto}</p>
+                        <div id="comments-${blog.Nro}" class="comments">
+                            <h4>Comentarios</h4>
+                            <!-- Comentarios se agregarán aquí -->
+                        </div>
+                    `;
+                    publicBlogsDiv.appendChild(blogDiv);
+
+                    await cargarComentarios(blog.Nro);
+                }
+            } catch (error) {
+                console.error('Error al cargar los blogs:', error);
+            }
+        }
+
+        async function cargarComentarios(blogId) {
+            try {
+                const response = await fetch(`/comments/${blogId}`);
+                if (!response.ok) {
+                    throw new Error('Error al cargar comentarios');
+                }
+                const comentarios = await response.json();
+                const commentsDiv = document.getElementById(`comments-${blogId}`);
+                commentsDiv.innerHTML = '<h4>Comentarios</h4>';
+
+                if (comentarios.length === 0) {
+                    commentsDiv.innerHTML += '<p>No hay comentarios aún.</p>';
+                } else {
+                    comentarios.forEach(comentario => {
+                        const comentarioP = document.createElement('p');
+                        comentarioP.textContent = comentario.texto;
+                        commentsDiv.appendChild(comentarioP);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar los comentarios:', error);
+            }
+        }
+
+        async function verificarSesion() {
+            try {
+                const response = await fetch('/session-status');
+                if (response.ok) {
+                    const data = await response.json();
+                    const userActionsDiv = document.getElementById('user-actions');
+                    if (data.loggedIn) {
+                        userActionsDiv.innerHTML = `
+                            <p>Bienvenido, ${data.nombre}</p>
+                            <a href="/dashboard">Dashboard</a>
+                            <a href="/logout">Cerrar Sesión</a>
+                        `;
+                    } else {
+                        userActionsDiv.innerHTML = `
+                            <a href="/login">Iniciar Sesión</a>
+                            <a href="/register">Registrarse</a>
+                        `;
+                    }
+                }
+            } catch (error) {
+                console.error('Error al verificar la sesión:', error);
+            }
+        }
+
+        window.onload = () => {
+            cargarBlogsPublicados();
+            verificarSesion();
+        };
+    </script>
+</body>
+</html>
+

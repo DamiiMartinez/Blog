@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/styles.css">
+    <title>Dashboard de Usuario</title>
+</head>
+<body>
+    <h1>Dashboard de Usuario</h1>
+    <a href="/">Volver a la página principal</a>
+    <a href="/logout">Cerrar Sesión</a>
+
+    <h2>Blogs Disponibles</h2>
+    <div id="user-blogs"></div>
+
+    <script>
+        async function cargarBlogsUsuario() {
+            try {
+                const response = await fetch('/posts');
+                if (!response.ok) {
+                    throw new Error('Error al cargar blogs');
+                }
+                const blogs = await response.json();
+                const userBlogsDiv = document.getElementById('user-blogs');
+                userBlogsDiv.innerHTML = '';
+
+                blogs.forEach(blog => {
+                    const blogDiv = document.createElement('div');
+                    blogDiv.innerHTML = `
+                        <h3>${blog.nombre}</h3>
+                        <p>${blog.texto}</p>
+                        <div id="comments-${blog.Nro}">
+                            <h4>Comentarios</h4>
+                        </div>
+                        <form onsubmit="comentarBlog(event, ${blog.Nro})">
+                            <textarea name="texto" required></textarea>
+                            <button type="submit">Comentar</button>
+                        </form>
+                    `;
+                    userBlogsDiv.appendChild(blogDiv);
+                    cargarComentarios(blog.Nro);
+                });
+            } catch (error) {
+                console.error('Error al cargar los blogs:', error);
+            }
+        }
+
+        async function cargarComentarios(blogId) {
+            try {
+                const response = await fetch(`/comments/${blogId}`);
+                if (!response.ok) {
+                    throw new Error('Error al cargar comentarios');
+                }
+                const comentarios = await response.json();
+                const commentsDiv = document.getElementById(`comments-${blogId}`);
+                commentsDiv.innerHTML = '<h4>Comentarios</h4>';
+
+                if (comentarios.length === 0) {
+                    commentsDiv.innerHTML += '<p>No hay comentarios aún.</p>';
+                } else {
+                    comentarios.forEach(comentario => {
+                        const comentarioP = document.createElement('p');
+                        comentarioP.textContent = comentario.texto;
+                        commentsDiv.appendChild(comentarioP);
+                    });
+                }
+            } catch (error) {
+                console.error('Error al cargar los comentarios:', error);
+            }
+        }
+
+        async function comentarBlog(event, blogId) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            const texto = formData.get('texto');
+          
+            try {
+              const response = await fetch(`/comment/${blogId}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ texto })
+              });
+          
+              if (response.ok) {
+                alert('Comentario agregado exitosamente');
+                form.reset();
+                cargarComentarios(blogId);
+              } else {
+                throw new Error('Error al agregar el comentario');
+              }
+            } catch (error) {
+              console.error('Error:', error);
+              alert('Error al agregar el comentario');
+            }
+          }
+
+        window.onload = cargarBlogsUsuario;
+    </script>
+</body>
+</html>
