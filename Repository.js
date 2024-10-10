@@ -139,6 +139,10 @@ const Comentario = sequelize.define('Comentario', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  autorId:{
+    type: Sequelize.CHAR, 
+    allowNull: false,
+  },
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
