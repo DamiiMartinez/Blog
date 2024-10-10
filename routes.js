@@ -1,5 +1,5 @@
 const express = require('express');
-const router = express.Router();
+const router = express();
 
 const path = require('path');
 const { Persona, Usuario, Blog, Comentario } = require('./Repository');
